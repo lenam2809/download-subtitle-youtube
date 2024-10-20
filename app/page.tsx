@@ -18,7 +18,7 @@ export default function HomePage() {
         setSubtitles(null);
       }
     } catch (err) {
-      setError('Failed to fetch subtitles');
+      setError(`Failed to fetch subtitles ${err}`);
       setSubtitles(null);
     }
   };
