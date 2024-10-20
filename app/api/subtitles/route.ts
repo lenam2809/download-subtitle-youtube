@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import ytdl from 'ytdl-core';
 import { parseStringPromise } from 'xml2js';
 
+interface SubtitleText {
+  _: string; // This represents the actual subtitle text.
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const videoUrl = searchParams.get('url');
@@ -25,8 +29,9 @@ export async function GET(request: Request) {
 
     // Sử dụng xml2js để phân tích cú pháp XML và lấy nội dung phụ đề
     const parsedXml = await parseStringPromise(subtitleXml);
-    const textElements = parsedXml.transcript.text || [];
-    const combinedText = textElements.map((item: any) => item._).join('\n');
+    const textElements = parsedXml.transcript.text as SubtitleText[] || []; // Cast to SubtitleText[]
+
+    const combinedText = textElements.map((item) => item._).join('\n');
 
     return NextResponse.json({ text: combinedText }, { status: 200 });
   } catch (error) {
